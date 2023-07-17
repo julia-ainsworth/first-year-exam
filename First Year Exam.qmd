@@ -1,0 +1,57 @@
+---
+title: "First Year Exam"
+format: pdf
+editor: visual
+---
+
+### Julia Ainsworth
+
+### PID: A59018962
+
+# Examining the data
+
+Loading packages: (message = F to avoid cluttering the document)
+
+```{r message = F}
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(skimr)
+```
+
+Import data:
+
+```{r}
+cov.data <- read.csv("covid19_variants.csv")
+# examine the data 
+head(cov.data, n = 4)
+```
+
+Making dates easier to work with
+
+```{r}
+#Converting to date format
+cov.data$date <- ymd(cov.data$date)
+
+```
+
+Filtering the data to remove "Total" and "Other" from the variant_name column
+
+```{r}
+cov.data.filtered <- cov.data %>%
+  filter(variant_name != "Total" & variant_name != "Other")
+
+```
+
+# Making the final graph
+
+```{r}
+ggplot(cov.data.filtered) + 
+  aes(x = date, percentage, col = variant_name) + 
+  geom_line() + 
+  ylim(0,100) + 
+  labs(x = "Year", y = "Percentage of sequenced specimens", title = "Covid-19 Variants in California", caption = "Data source: <https://cdph.ca.gov/>")   + 
+  theme_bw() + 
+  theme(axis.ticks = element_line(linewidth = 0.5), legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1, )) 
+
+```
